@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio — Hacking Interface</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Cormorant:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@400;500&family=Fragment+Mono:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Martian+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Red+Hat+Mono:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#04110b;}
+  #root{position:fixed;inset:0;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="campaign.jsx"></script>
+<script type="text/babel" src="crthome.jsx"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "treatment": "crt",
+  "headline": "Newsreader",
+  "digi": true,
+  "typeface": "DM Mono",
+  "color": "#d7e6ff",
+  "glow": "Max",
+  "graphic": "None",
+  "entry": "Decrypt",
+  "scanlines": false,
+  "decode": true,
+  "mouse": true
+}/*EDITMODE-END*/;
+
+const FONT_MAP = {
+  'JetBrains Mono': "'JetBrains Mono'",
+  'IBM Plex Mono': "'IBM Plex Mono'",
+  'Martian Mono': "'Martian Mono'",
+  'Spline Sans Mono': "'Spline Sans Mono'",
+  'DM Mono': "'DM Mono'",
+  'Fragment Mono': "'Fragment Mono'",
+  'Red Hat Mono': "'Red Hat Mono'",
+};
+const HEAD_MAP = {
+  'Newsreader': "'Newsreader'",
+  'Playfair Display': "'Playfair Display'",
+  'Bodoni Moda': "'Bodoni Moda'",
+  'Cormorant': "'Cormorant'",
+};
+
+function App(){
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  return (
+    <React.Fragment>
+      <HackHome
+        treatment={t.treatment}
+        typeface={FONT_MAP[t.typeface] || "'IBM Plex Mono'"}
+        headline={HEAD_MAP[t.headline] || "'Newsreader'"}
+        digi={t.digi}
+        color={t.color}
+        glow={(t.glow || 'Strong').toLowerCase()}
+        graphic={(t.graphic || 'None').toLowerCase()}
+        entry={(t.entry || 'Decrypt').toLowerCase()}
+        scanlines={t.scanlines}
+        decode={t.decode}
+        mouse={t.mouse}
+      />
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Treatment" />
+        <TweakRadio label="Mode" value={t.treatment} options={['crt','console']}
+          onChange={(v)=>setTweak('treatment', v)} />
+        <TweakSection label="Headline" />
+        <TweakSelect label="Serif" value={t.headline}
+          options={['Newsreader','Playfair Display','Bodoni Moda','Cormorant']}
+          onChange={(v)=>setTweak('headline', v)} />
+        <TweakToggle label="Digi filter" value={t.digi} onChange={(v)=>setTweak('digi', v)} />
+        <TweakRadio label="Glow" value={t.glow} options={['Off','Soft','Strong','Max']}
+          onChange={(v)=>setTweak('glow', v)} />
+        <TweakSection label="Interface type" />
+        <TweakSelect label="Mono" value={t.typeface}
+          options={['IBM Plex Mono','JetBrains Mono','Martian Mono','Spline Sans Mono','DM Mono','Fragment Mono','Red Hat Mono']}
+          onChange={(v)=>setTweak('typeface', v)} />
+        <TweakSection label="Phosphor" />
+        <TweakColor label="Colour" value={t.color}
+          options={['#d7e6ff','#5cff8f','#ffb000','#4be3ff','#ff5cf0']}
+          onChange={(v)=>setTweak('color', v)} />
+        <TweakSection label="Open a project" />
+        <TweakRadio label="Entry" value={t.entry} options={['Decrypt','Expand','Power-on']}
+          onChange={(v)=>setTweak('entry', v)} />
+        <TweakSection label="Graphic" />
+        <TweakSelect label="Object" value={t.graphic}
+          options={['None','Field','Globe','Cube','Torus','Tunnel']}
+          onChange={(v)=>setTweak('graphic', v)} />
+        <TweakToggle label="Mouse warp" value={t.mouse} onChange={(v)=>setTweak('mouse', v)} />
+        <TweakSection label="Effects" />
+        <TweakToggle label="Scanlines" value={t.scanlines} onChange={(v)=>setTweak('scanlines', v)} />
+        <TweakToggle label="Text decode" value={t.decode} onChange={(v)=>setTweak('decode', v)} />
+      </TweaksPanel>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#04110b"/><g fill="none" stroke="#5cff8f" stroke-width="2"><circle cx="50" cy="50" r="22"/><ellipse cx="50" cy="50" rx="22" ry="8"/><ellipse cx="50" cy="50" rx="8" ry="22"/></g><rect x="20" y="78" width="34" height="3" fill="#5cff8f"/></svg>
+</template>
+</body>
+</html>
